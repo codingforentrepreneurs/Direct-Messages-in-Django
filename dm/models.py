@@ -36,8 +36,11 @@ class ChannelUser(BaseModel):
 # oursite.com/dm/ned_stark
 
 class ChannelQuerySet(models.QuerySet):
+    def only_one(self):
+        return self.annotate(num_users=Count("users")).filter(num_users=1)
+
     def only_two(self):
-        return self.annotate(num_users=Count("users")).filter(num_user=2)
+        return self.annotate(num_users=Count("users")).filter(num_users=2)
 
 class ChannelManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
