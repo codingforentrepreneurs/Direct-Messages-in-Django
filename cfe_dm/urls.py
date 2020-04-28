@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from dm.views import private_message_view
+
 urlpatterns = [
+    path("dm/<str:username>", private_message_view),
     path('admin/', admin.site.urls),
 ]

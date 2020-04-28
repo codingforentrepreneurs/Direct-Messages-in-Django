@@ -41,10 +41,16 @@ class ChannelQuerySet(models.QuerySet):
 
     def only_two(self):
         return self.annotate(num_users=Count("users")).filter(num_users=2)
+    
+    def filter_by_username(self, username):
+        return self.filter(channeluser__user__username=username)
 
 class ChannelManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
         return ChannelQuerySet(self.model, using=self._db)
+    
+    def filter_by_private_message(self, username_a, username_b):
+        return self.get_queryset().only_two().filter_by_username(username_a).filter_by_username(username_b).order_by("timestamp")
 
 
 class Channel(BaseModel): # models.model
@@ -60,3 +66,6 @@ class Channel(BaseModel): # models.model
     # title -> Channel name/title
 
     objects = ChannelManager()
+
+    class Meta:
+        ordering = ['timestamp']
