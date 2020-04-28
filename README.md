@@ -1,5 +1,9 @@
-# Direct Messages in Django
+[![Direct Messages in Django Logo](https://static.codingforentrepreneurs.com/media/projects/direct-messages-django/images/share/Direct_Messages_in_Django_-_Share.jpg)](https://www.codingforentrepreneurs.com/projects/direct-messages-django)
 
+# Direct Messages in Django
+A tutorial on how to create synchronous slack-inspired message channels and private messages using Django. Enjoy!
+
+- Learn [here](https://www.codingforentrepreneurs.com/projects/direct-messages-django)
 
 ### Lesson Code
 
