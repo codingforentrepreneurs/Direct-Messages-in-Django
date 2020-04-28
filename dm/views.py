@@ -1,8 +1,17 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-
+from django.views.generic import DetailView
 from django.shortcuts import render
 
 from .models import Channel
+
+class PrivateMessageDetailView(LoginRequiredMixin, DetailView):
+    template_name = 'dm/private_message.html'
+    def get_object(self, *args, **kwargs):
+        username = self.kwargs.get("username")
+        my_username = self.request.user.username
+        channel_obj, _ = Channel.objects.get_or_create_private_message(my_username, username)
+        return channel_obj
 
 # Create your views here.
 def private_message_view(request, username, *args, **kwargs):
