@@ -1,4 +1,5 @@
 import uuid
+from django.apps import apps
 from django.conf import settings
 from django.db import models
 from django.db.models import Count
@@ -51,6 +52,17 @@ class ChannelManager(models.Manager):
     
     def filter_by_private_message(self, username_a, username_b):
         return self.get_queryset().only_two().filter_by_username(username_a).filter_by_username(username_b).order_by("timestamp")
+    
+    def get_or_create_private_message(self, username_a, username_b):
+        qs = self.filter_by_private_message(username_a, username_b)
+        if qs.exists():
+            return qs.order_by("timestamp").first(), False # obj, created
+        User = apps.get_model("auth", model_name='User')
+        channel_obj = Channel.objects.create()
+        ch_u_a = ChannelUser(user=User.objects.get(username=username_a), channel=channel_obj)
+        ch_u_b = ChannelUser(user=User.objects.get(username=username_b), channel=channel_obj)
+        ChannelUser.objects.bulk_create([ch_u_a, ch_u_b])
+        return channel_obj, True
 
 
 class Channel(BaseModel): # models.model
