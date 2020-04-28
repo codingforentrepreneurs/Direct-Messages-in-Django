@@ -1,6 +1,7 @@
 import uuid
 from django.conf import settings
 from django.db import models
+from django.db.models import Count
 
 User = settings.AUTH_USER_MODEL
 
@@ -28,9 +29,26 @@ class ChannelUser(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     # permissions? 
 
+# jon_snow -> ned_stark
+# ned_stark -> jon_snow
+
+# oursite.com/dm/jon_snow
+# oursite.com/dm/ned_stark
+
+class ChannelQuerySet(models.QuerySet):
+    def only_two(self):
+        return self.annotate(num_users=Count("users")).filter(num_user=2)
+
+class ChannelManager(models.Manager):
+    def get_queryset(self, *args, **kwargs):
+        return ChannelQuerySet(self.model, using=self._db)
+
+
 class Channel(BaseModel): # models.model
     # slack-like
     # 1 user
     # 2 users
     # 2+ users
     users = models.ManyToManyField(User, blank=True, through=ChannelUser)
+
+    objects = ChannelManager()
