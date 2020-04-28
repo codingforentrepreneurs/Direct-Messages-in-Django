@@ -1,5 +1,8 @@
 import uuid
+from django.conf import settings
 from django.db import models
+
+User = settings.AUTH_USER_MODEL
 
 # Create your models here.
 class BaseModel(models.Model):
@@ -14,5 +17,8 @@ class BaseModel(models.Model):
         abstract = True
 
 
+class Message(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
 
-class Channel(BaseModel): # models.model
+# class Channel(BaseModel): # models.model
