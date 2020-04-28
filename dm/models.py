@@ -53,5 +53,10 @@ class Channel(BaseModel): # models.model
     # 2 users
     # 2+ users
     users = models.ManyToManyField(User, blank=True, through=ChannelUser)
+    # channel_type 
+    # max_users 
+    # status -> private, public
+    # slug -> Lookup slug 
+    # title -> Channel name/title
 
     objects = ChannelManager()
