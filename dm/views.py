@@ -7,9 +7,14 @@ from .models import Channel
 
 class PrivateMessageDetailView(LoginRequiredMixin, DetailView):
     template_name = 'dm/private_message.html'
+    # def get_template_names(self, *args, **kwargs):
+    #     return ['dm/private_message.html']
     def get_object(self, *args, **kwargs):
         username = self.kwargs.get("username")
         my_username = self.request.user.username
+        if username == my_username:
+            my_channel_obj, _ = Channel.objects.get_or_create_current_user_private_message(self.request.user)
+            return my_channel_obj
         channel_obj, _ = Channel.objects.get_or_create_private_message(my_username, username)
         if channel_obj == None:
             raise Http404

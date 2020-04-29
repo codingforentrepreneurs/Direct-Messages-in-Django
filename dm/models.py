@@ -53,6 +53,15 @@ class ChannelManager(models.Manager):
     def filter_by_private_message(self, username_a, username_b):
         return self.get_queryset().only_two().filter_by_username(username_a).filter_by_username(username_b).order_by("timestamp")
     
+    def get_or_create_current_user_private_message(self, user):
+        qs = self.get_queryset().only_one().filter_by_username(user.username)
+        if qs.exists():
+            return qs.order_by("timestamp").first(), False
+        channel_obj = Channel.objects.create()
+        ChannelUser.objects.create(user=user, channel=channel_obj)
+        return channel_obj, True
+
+
     def get_or_create_private_message(self, username_a, username_b):
         qs = self.filter_by_private_message(username_a, username_b)
         if qs.exists():
