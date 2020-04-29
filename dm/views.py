@@ -2,11 +2,35 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, Http404
 from django.views.generic import DetailView
+from django.views.generic.edit import FormMixin
+
 from django.shortcuts import render
 
-from .models import Channel
+from .forms import ChannelMessageForm
+from .models import Channel, ChannelMessage
 
-class ChannelDetailView(LoginRequiredMixin, DetailView):
+class ChannelFormMixin(FormMixin):
+    form_class = ChannelMessageForm
+    # success_url = './'
+    def get_success_url(self):
+        return self.request.path
+    # handle the form with this mixin
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            raise PermissionDenied
+        form = self.get_form()
+        if form.is_valid():
+            channel = self.get_object()
+            user = self.request.user
+            content = form.cleaned_data.get("content")
+            ChannelMessage.objects.create(channel=channel, user=user, content=content)
+            return super().form_valid(form)
+        else:
+            return super().form_invalid(form)
+
+
+
+class ChannelDetailView(LoginRequiredMixin, ChannelFormMixin, DetailView):
     template_name = 'dm/private_message.html'
     queryset = Channel.objects.all() 
     def get_context_data(self, *args, **kwargs):
@@ -23,7 +47,7 @@ class ChannelDetailView(LoginRequiredMixin, DetailView):
     #     qs = Channel.objects.all().filter_by_username(username)
     #     return qs
 
-class PrivateMessageDetailView(LoginRequiredMixin, DetailView):
+class PrivateMessageDetailView(LoginRequiredMixin, ChannelFormMixin, DetailView):
     template_name = 'dm/private_message.html'
     # def get_template_names(self, *args, **kwargs):
     #     return ['dm/private_message.html']
