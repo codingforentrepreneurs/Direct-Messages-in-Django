@@ -25,3 +25,9 @@ A tutorial on how to create synchronous slack-inspired message channels and priv
 
 [12 - Get or Create Private Channel](../../tree/b3c828c5be2ea74c908670f59f221340ec838d4f/)
 
+[13 - Function Based View to Class Based View](../../tree/82eea051edce6ac4c732c6ec66ec0c00c2edbc48/)
+
+[14 - Templates & Our View](../../tree/188d7fb9e311f32528095b667c511e23f3ca74de/)
+
+[15 - My Private Channel View](../../tree/f48b71ae5bfe008b69be3eb1af137aa66a7eafc7/)
+
