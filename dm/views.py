@@ -1,9 +1,27 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, Http404
 from django.views.generic import DetailView
 from django.shortcuts import render
 
 from .models import Channel
+
+class ChannelDetailView(LoginRequiredMixin, DetailView):
+    template_name = 'dm/private_message.html'
+    queryset = Channel.objects.all() 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        obj = context['object']
+        # if self.request.user not in obj.users.all():
+        #     raise PermissionDenied
+        context['is_channel_member'] = self.request.user in obj.users.all()
+        return context
+    
+    # def get_queryset(self):
+    #     user = self.request.user # definitely a user
+    #     username = user.username
+    #     qs = Channel.objects.all().filter_by_username(username)
+    #     return qs
 
 class PrivateMessageDetailView(LoginRequiredMixin, DetailView):
     template_name = 'dm/private_message.html'

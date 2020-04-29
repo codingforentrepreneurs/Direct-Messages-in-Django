@@ -14,11 +14,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 
-from dm.views import PrivateMessageDetailView
+from dm.views import (
+    ChannelDetailView,
+    PrivateMessageDetailView
+)
 
 urlpatterns = [
+    re_path(r'channel/(?P<pk>[\w-]+)', ChannelDetailView.as_view()),
     path("dm/<str:username>", PrivateMessageDetailView.as_view()),
     path('admin/', admin.site.urls),
 ]
