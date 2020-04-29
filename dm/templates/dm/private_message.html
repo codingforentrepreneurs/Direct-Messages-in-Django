@@ -1,0 +1,30 @@
+{% extends "dm/base.html" %}
+
+
+{% block content %}
+
+Channel - {{ object.id }}
+
+
+<h1>Channel Messages</h1>
+{% for message in object.channelmessage_set.all %}
+<div>
+    
+{{ message.user }} {% if request.user == message.user %}this is you  {% endif %}
+
+{{ message.content }}
+</div>
+
+{% endfor %}
+
+
+<h1>Channel Users</h1>
+{% for channel_user in object.channeluser_set.all %}
+<div>
+    
+{{ channel_user.user }} {% if request.user == channel_user.user %}this is you  {% endif %}
+</div>
+
+{% endfor %}
+
+{% endblock %}

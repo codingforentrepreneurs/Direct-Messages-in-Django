@@ -58,9 +58,20 @@ class ChannelManager(models.Manager):
         if qs.exists():
             return qs.order_by("timestamp").first(), False # obj, created
         User = apps.get_model("auth", model_name='User')
+        user_a, user_b = None, None
+        try:
+            user_a = User.objects.get(username=username_a)
+        except User.DoesNotExist:
+            return None, False
+        try:
+            user_b = User.objects.get(username=username_b)
+        except User.DoesNotExist:
+            return None, False
+        if user_a == None or user_b == None:
+            return None, False
         channel_obj = Channel.objects.create()
-        ch_u_a = ChannelUser(user=User.objects.get(username=username_a), channel=channel_obj)
-        ch_u_b = ChannelUser(user=User.objects.get(username=username_b), channel=channel_obj)
+        ch_u_a = ChannelUser(user=user_a, channel=channel_obj)
+        ch_u_b = ChannelUser(user=user_b, channel=channel_obj)
         ChannelUser.objects.bulk_create([ch_u_a, ch_u_b])
         return channel_obj, True
 

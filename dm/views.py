@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.views.generic import DetailView
 from django.shortcuts import render
 
@@ -11,6 +11,8 @@ class PrivateMessageDetailView(LoginRequiredMixin, DetailView):
         username = self.kwargs.get("username")
         my_username = self.request.user.username
         channel_obj, _ = Channel.objects.get_or_create_private_message(my_username, username)
+        if channel_obj == None:
+            raise Http404
         return channel_obj
 
 # Create your views here.
