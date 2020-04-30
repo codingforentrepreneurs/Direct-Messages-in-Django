@@ -37,3 +37,7 @@ A tutorial on how to create synchronous slack-inspired message channels and priv
 
 [18 - Channel Message Form](../../tree/e6f1cfff5ea5860349495c1a629740b17e7a9727/)
 
+[19 - AJAX with XMLHttpRequest](../../tree/78b613d36a058e9ab54862b1f49b265a47d976ff/)
+
+[20 - Simple UI & CSS In Channel](../../tree/9b66179dfaaa6f0efe8dcf0250a5bf6e7fa3d8fc/)
+
