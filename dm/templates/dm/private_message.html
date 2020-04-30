@@ -3,6 +3,42 @@
 
 {% block content %}
 
+<style>
+    #message-container {
+        height: 200px !important;
+        overflow-y: scroll;
+    }
+    .my-3 {
+        margin: 1.2rem auto;
+    }
+    .w-35 {
+        width: 35%;
+    }
+    .mr-0 {
+        margin-right: 0 !important;
+    }
+    .ml-0 {
+        margin-left: 0 !important;
+    }
+    .bg-primary {
+        background-color: #007cae !important;
+    }
+    .bg-secondary {
+        background-color: #ccc !important;
+    }
+    .text-white {
+        color: #fff !important;
+
+    }
+    .rounded {
+        border-radius: .2rem;
+    }
+    .px-1 {
+        padding: 0.2rem 0.6rem 0.2rem 0.6rem;
+    }
+   
+</style>
+
 Channel - {{ object.id }}
 
 
@@ -10,12 +46,12 @@ Channel - {{ object.id }}
 
 <div id='message-container'>
     {% for message in object.channelmessage_set.all %}
-    <div>
-        
-    {{ message.user }} {% if request.user == message.user %}this is you  {% endif %}
+        <div class='my-3 w-35 px-1 rounded {% if request.user == message.user %}mr-0 bg-primary text-white {% else %}bg-secondary ml-0{% endif %}'>
+            
+        <b>{{ message.user }}</b>
 
-    {{ message.content }}
-    </div>
+        <p>{{ message.content }}</p>
+        </div>
     {% endfor %}
 </div>
 
@@ -38,6 +74,12 @@ Channel - {{ object.id }}
     // async javascript request
     const msgForm = document.getElementById("message-form")
     const msgContainer = document.getElementById("message-container")
+    
+    function scrollBottom (el){
+        el.scrollTop = el.scrollHeight
+    }
+    scrollBottom(msgContainer)
+
     msgForm.addEventListener("submit", (event)=>{
         event.preventDefault()
         const targetData = event.target
@@ -56,8 +98,9 @@ Channel - {{ object.id }}
             if (xhr.status === 201) {
                 const responseData = xhr.response
                 let currentMsgHtml = msgContainer.innerHTML
-                currentMsgHtml += `<div>${responseData.username} ${responseData.content}</div>`
+                currentMsgHtml += `<div class='my-3 w-35 px-1 rounded mr-0 bg-primary text-white'><b>${responseData.username}</b><p>${responseData.content}</p></div>`
                 msgContainer.innerHTML = currentMsgHtml
+                scrollBottom(msgContainer)
                 msgForm.reset()
             } else if (xhr.status === 400) {
                 console.log(xhr.response)
