@@ -31,3 +31,9 @@ A tutorial on how to create synchronous slack-inspired message channels and priv
 
 [15 - My Private Channel View](../../tree/f48b71ae5bfe008b69be3eb1af137aa66a7eafc7/)
 
+[16 - Multi-User Channel Detail View](../../tree/d91384e639daa2f7dfbcec27eb9a3c14c691eef9/)
+
+[17 - URL Regex for UUID](../../tree/7d0be5f231595f30ebe037c68f22d5a2842eee6c/)
+
+[18 - Channel Message Form](../../tree/e6f1cfff5ea5860349495c1a629740b17e7a9727/)
+
