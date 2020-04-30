@@ -7,15 +7,17 @@ Channel - {{ object.id }}
 
 
 <h1>Channel Messages</h1>
-{% for message in object.channelmessage_set.all %}
-<div>
-    
-{{ message.user }} {% if request.user == message.user %}this is you  {% endif %}
 
-{{ message.content }}
+<div id='message-container'>
+    {% for message in object.channelmessage_set.all %}
+    <div>
+        
+    {{ message.user }} {% if request.user == message.user %}this is you  {% endif %}
+
+    {{ message.content }}
+    </div>
+    {% endfor %}
 </div>
-
-{% endfor %}
 
 
 <h1>Channel Users</h1>
@@ -27,9 +29,45 @@ Channel - {{ object.id }}
 
 {% endfor %}
 
-<form action="{{ request.path }}" method='POST'> {% csrf_token %}
+<form id='message-form' action="{{ request.path }}" method='POST'> {% csrf_token %}
 {{ form.as_p }}
 <input type='submit' value='Message' />
 </form>
+
+<script>
+    // async javascript request
+    const msgForm = document.getElementById("message-form")
+    const msgContainer = document.getElementById("message-container")
+    msgForm.addEventListener("submit", (event)=>{
+        event.preventDefault()
+        const targetData = event.target
+        const formData = new FormData(targetData)
+        const xhr = new XMLHttpRequest() // fetch
+        const endpoint = msgForm.getAttribute("action")
+        const method = msgForm.getAttribute("method")
+        xhr.open(method, endpoint)
+        //
+        xhr.responseType = 'json'
+        xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+        xhr.onload = () => {
+            // const myJsonResponse = JSON.parse(xhr.response)
+            // console.log(xhr.status, xhr.response)
+            if (xhr.status === 201) {
+                const responseData = xhr.response
+                let currentMsgHtml = msgContainer.innerHTML
+                currentMsgHtml += `<div>${responseData.username} ${responseData.content}</div>`
+                msgContainer.innerHTML = currentMsgHtml
+                msgForm.reset()
+            } else if (xhr.status === 400) {
+                console.log(xhr.response)
+            } else {
+                alert("An error occurred. Please try again later.")
+            }
+        }
+
+        xhr.send(formData)
+    })
+</script>
 
 {% endblock %}

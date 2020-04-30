@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 from django.views.generic import DetailView
 from django.views.generic.edit import FormMixin
 
@@ -23,9 +23,14 @@ class ChannelFormMixin(FormMixin):
             channel = self.get_object()
             user = self.request.user
             content = form.cleaned_data.get("content")
-            ChannelMessage.objects.create(channel=channel, user=user, content=content)
+            channel_obj = ChannelMessage.objects.create(channel=channel, user=user, content=content)
+            if request.is_ajax():
+                # Django Rest Framework
+                return JsonResponse({"content": channel_obj.content, "username": channel_obj.user.username }, status=201)
             return super().form_valid(form)
         else:
+            if request.is_ajax():
+                return JsonResponse({"errors": form.errors}, status=400)
             return super().form_invalid(form)
 
 
